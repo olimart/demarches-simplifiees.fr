@@ -628,6 +628,10 @@ class Procedure < ApplicationRecord
       result << :instructeurs
     end
 
+    if missing_zones?
+      result << :zones
+    end
+
     result
   end
 
@@ -658,6 +662,14 @@ class Procedure < ApplicationRecord
 
   def missing_instructeurs?
     !AssignTo.exists?(groupe_instructeur: groupe_instructeurs)
+  end
+
+  def missing_zones?
+    if Flipper.enabled?(:zonage)
+      zones.empty?
+    else
+      false
+    end
   end
 
   def revised?
